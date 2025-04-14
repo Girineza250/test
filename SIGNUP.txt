@@ -1,0 +1,128 @@
+SIGN UP
+=============
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace GroupRequestAPP
+{
+    public partial class signup : Form
+    {
+        public signup()
+        {
+            InitializeComponent();
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void newuserLL_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            //signup signForm = new signup();
+            //signForm.Show();
+            login loginForm = new login();
+            loginForm.Show();
+            this.Hide();
+        }
+
+        private void signup_Load(object sender, EventArgs e)
+        {
+            getFacultyData();   
+            getRoleData ();
+        }
+        private void getFacultyData()
+        {
+            // sql connection
+            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-6EEN5QA\\SQLEXPRESS;Initial Catalog=GroupRequests;Integrated Security=True;TrustServerCertificate=True");
+            // sql data adapter
+            string query = "SELECT * FROM FACULTY";
+            SqlDataAdapter sda = new SqlDataAdapter(query, conn);
+            // data set
+            DataSet ds = new DataSet();
+            // fill in data into dataset
+            sda.Fill(ds, "FACULTY");
+
+            // add data into combobox
+            facultycmb.DataSource = ds.Tables["FACULTY"];
+
+            // display
+            facultycmb.DisplayMember = "facName";
+            facultycmb.ValueMember = "facId";
+        }
+        private void getRoleData()
+        {
+            // sql connection
+            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-6EEN5QA\\SQLEXPRESS;Initial Catalog=GroupRequests;Integrated Security=True;TrustServerCertificate=True");
+            // sql data adapter
+            string query = "SELECT * FROM ROLE";
+            SqlDataAdapter sda = new SqlDataAdapter(query, conn);
+            // data set
+            DataSet ds = new DataSet();
+            // fill in data into dataset
+            sda.Fill(ds, "ROLE");
+
+            // add data into combobox
+            rolecmb.DataSource = ds.Tables["ROLE"];
+
+            // display
+            rolecmb.DisplayMember = "name";
+            rolecmb.ValueMember = "Id";
+        }
+
+        private void register()
+        {
+            if (!passwordtb.Text.Equals(confirmtb.Text))
+            {
+                MessageBox.Show("passowrd doesnt'match");
+                    return;
+
+            }
+            // sql connection
+            SqlConnection conn = new SqlConnection("Data Source=DESKTOP-6EEN5QA\\SQLEXPRESS;Initial Catalog=GroupRequests;Integrated Security=True;TrustServerCertificate=True");
+            // prepared query
+            string query = "INSERT INTO USERS VALUES('" + nametb.Text + "', '" + usernametb.Text + "','" + facultycmb.SelectedValue + "','" + passwordtb.Text + "' ,"+rolecmb.SelectedValue+")";
+            SqlCommand cmd = new SqlCommand(query, conn);
+
+            conn.Open();
+
+            if(cmd.ExecuteNonQuery()>0)
+            {
+                MessageBox.Show("user has been registerd successfully");
+                login lo =new login();
+                lo.Show();
+                this.Hide();
+                    }
+            conn.Close();
+        }
+
+        private void loginTB_Click(object sender, EventArgs e)
+        {
+            register(); 
+        }
+
+        private void rolecmb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void usernametb_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
